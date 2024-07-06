@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 export default async function handler(req, res) {
   const SHEET_ID = process.env.REACT_APP_SHEET_ID;

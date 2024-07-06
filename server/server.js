@@ -1,8 +1,11 @@
-require('dotenv').config();
-const express = require('express');
-const axios = require('axios');
-const path = require('path');
-const cors = require('cors');
+import dotenv from 'dotenv';
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+// Assuming you're in a Node.js environment that doesn't have fetch globally available
+import fetch from 'node-fetch';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -31,24 +34,18 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.get('/api/word', async (req, res) => {
   try {
     console.log('Fetching word from Google Sheets...');
-    const response = await axios.get(
+    const response = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/A:A?key=${API_KEY}`
     );
-    const words = response.data.values.flat().filter(word => word && word.length === 5);
-    if (words.length === 0) {
-      throw new Error('No 5-letter words found in the sheet');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
-    console.log('Word fetched successfully:', selectedWord);
-    res.json({ word: selectedWord });
+    const data = await response.json();
+    // Process the data or send it in the response
   } catch (error) {
-    console.error('Error fetching word:', error);
-    res.status(500).json({ error: 'Failed to fetch word', details: error.message });
+    console.error('Error fetching word from Google Sheets:', error);
+    res.status(500).send('Error fetching word');
   }
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // Error handling middleware
