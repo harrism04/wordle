@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import GameBoard from './GameBoard';
-import Keyboard from './Keyboard';
-import { fetchWord } from './api';
+import GameBoard from './GameBoard.js';
+import Keyboard from './Keyboard.js';
+import { fetchWord } from './api.js';
 
 const App = () => {
   const [word, setWord] = useState('');
