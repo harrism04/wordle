@@ -11,7 +11,7 @@ const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 app.use(cors({
-  origin: ['https://sohaidle.vercel.app', 'http://localhost:3000']
+  origin: ['https://sohaidle.vercel.app', 'http://localhost:3000', 'https://soh.ai','https://www.soh.ai']
 }));
 
 // Increase header and payload size limits
