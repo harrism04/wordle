@@ -11,6 +11,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    const fetch = (await import('node-fetch')).default;
+    
     console.log('Attempting to fetch from Google Sheets');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/A:A?key=${API_KEY}`;
     console.log('Fetching from URL:', url.replace(API_KEY, 'API_KEY_REDACTED'));
