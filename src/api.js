@@ -64,8 +64,8 @@ const fetchWordFromSheets = async () => {
 export const fetchWord = async () => {
   try {
     // Uncomment the method you want to use:
-    // return await fetchWordFromServer();
-    return await fetchWordFromSheets();
+    return await fetchWordFromServer();
+    // return await fetchWordFromSheets();
   } catch (error) {
     console.error('Failed to fetch word:', error.message);
     return 'ERROR';
