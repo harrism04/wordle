@@ -1,12 +1,7 @@
 const fetchWordFromServer = async () => {
-  console.log('Attempting to fetch word from local server...');
+  console.log('Attempting to fetch word from server...');
   try {
-    const response = await fetch('/api/word', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
+    const response = await fetch('/api/word');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
