@@ -1,6 +1,6 @@
-const axios = require('axios');
+import fetch from 'node-fetch';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   console.log('API route /api/word called');
   const SHEET_ID = process.env.REACT_APP_SHEET_ID;
   const API_KEY = process.env.REACT_APP_API_KEY;
@@ -11,14 +11,20 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    const fetch = (await import('node-fetch')).default;
     console.log('Attempting to fetch from Google Sheets');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/A:A?key=${API_KEY}`;
     console.log('Fetching from URL:', url.replace(API_KEY, 'API_KEY_REDACTED'));
     
-    const response = await axios.get(url);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
     console.log('Response received from Google Sheets');
     
-    const words = response.data.values.flat().filter(word => word && word.length === 5);
+    const words = data.values.flat().filter(word => word && word.length === 5);
     console.log(`Found ${words.length} valid 5-letter words`);
     
     if (words.length === 0) {
@@ -33,4 +39,4 @@ module.exports = async function handler(req, res) {
     console.error('Error in /api/word:', error.message);
     res.status(500).json({ error: 'Failed to fetch word', details: error.message });
   }
-};
+}
