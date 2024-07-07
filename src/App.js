@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Confetti from 'react-confetti';
 import GameBoard from './GameBoard.js';
 import Keyboard from './Keyboard.js';
@@ -15,26 +15,7 @@ const App = () => {
     fetchWord().then(setWord);
   }, []);
 
-  // New useEffect hook for physical keyboard support
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (gameOver) return;
-      const key = event.key.toUpperCase();
-      if (key === 'ENTER') {
-        handleKeyPress('Enter');
-      } else if (key === 'BACKSPACE') {
-        handleKeyPress('Backspace');
-      } else if (/^[A-Z]$/.test(key)) {
-        handleKeyPress(key);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [gameOver, currentGuess, word, guesses]);
-
-  const handleKeyPress = (key) => {
+  const handleKeyPress = useCallback((key) => {
     if (gameOver) return;
 
     if (key === 'Enter') {
@@ -54,11 +35,29 @@ const App = () => {
         setGameOver(true);
       }
     } else if (key === 'Backspace') {
-      setCurrentGuess(currentGuess.slice(0, -1));
+      setCurrentGuess(prev => prev.slice(0, -1));
     } else if (currentGuess.length < 5) {
-      setCurrentGuess(currentGuess + key);
+      setCurrentGuess(prev => prev + key);
     }
-  };
+  }, [currentGuess, gameOver, guesses, word]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (gameOver) return;
+      const key = event.key.toUpperCase();
+      if (key === 'ENTER') {
+        handleKeyPress('Enter');
+      } else if (key === 'BACKSPACE') {
+        handleKeyPress('Backspace');
+      } else if (/^[A-Z]$/.test(key)) {
+        handleKeyPress(key);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [gameOver, handleKeyPress]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -69,7 +68,7 @@ const App = () => {
       {gameOver && (
         <div className="mt-4 text-xl font-bold">
           {guesses.includes(word) 
-            ? 'Congrats nerd! You guessed it right for once!' 
+            ? 'Congrats, nerd you guessed it right!' 
             : `What a loser! The word was: ${word}`}
         </div>
       )}
