@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 const API_KEY = process.env.REACT_APP_API_KEY;
