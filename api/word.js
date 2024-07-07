@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 export default async function handler(req, res) {
+  console.log(`[${new Date().toISOString()}] Received request: ${req.method} ${req.url}`);
+
   const SHEET_ID = process.env.REACT_APP_SHEET_ID;
   const API_KEY = process.env.REACT_APP_API_KEY;
-
-  console.log(`[${new Date().toISOString()}] Received request: ${req.method} ${req.url}`);
 
   if (!SHEET_ID || !API_KEY) {
     console.error(`[${new Date().toISOString()}] Missing SHEET_ID or API_KEY in environment variables`);
