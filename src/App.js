@@ -39,7 +39,7 @@ const App = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">Wordle Clone</h1>
+      <h1 className="text-4xl font-bold mb-8">Verdle</h1>
       <GameBoard guesses={guesses} currentGuess={currentGuess} word={word} />
       <Keyboard onKeyPress={handleKeyPress} guesses={guesses} word={word} />
       {gameOver && (
