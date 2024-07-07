@@ -1,41 +1,23 @@
-const dotenv = require('dotenv');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const fetch = require('node-fetch');
-
-dotenv.config();
+require('dotenv').config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 const API_KEY = process.env.REACT_APP_API_KEY;
 
+// Middleware
 app.use(cors({
-  origin: ['https://sohaidle.vercel.app', 'http://localhost:3000', 'https://soh.ai', 'https://www.soh.ai']
+  origin: ['https://sohaidle.vercel.app', 'http://localhost:3000']
 }));
-
-// Increase header and payload size limits
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
-// Detailed request logging
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  // Filter out large headers like cookies
-  req.headers = Object.keys(req.headers).reduce((acc, key) => {
-    if (key.toLowerCase() !== 'cookie') {
-      acc[key] = req.headers[key];
-    }
-    return acc;
-  }, {});
-
-  console.log('Headers:', JSON.stringify(req.headers, null, 2));
-  console.log('Body:', JSON.stringify(req.body, null, 2));
-  next();
-});
-
+// API routes
 app.get('/api/word', async (req, res) => {
   try {
     console.log('Fetching word from Google Sheets...');
@@ -59,21 +41,18 @@ app.get('/api/word', async (req, res) => {
   }
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'build')));
+// Serve static files from the React app in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../build')));
 
-// The "catchall" handler: for any request that doesn't match one above, send back index.html
-app.get('*', (req, res) => {
-  console.log(`[${new Date().toISOString()}] Serving index.html for ${req.url}`);
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ error: 'Internal Server Error', details: err.message });
-});
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  });
+}
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
+
+module.exports = app; // For Vercel

@@ -24,11 +24,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node server.js",
-    "vercel-build": "npm install && SKIP_PREFLIGHT_CHECK=true npm run build",
+    "vercel-build": "npm run build",
     "dev": "concurrently \"npm run server\" \"npm start\""
   },
   "eslintConfig": {
