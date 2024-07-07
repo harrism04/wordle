@@ -31,7 +31,7 @@ const App = () => {
         setGameOver(true);
         setShowConfetti(true);
         // Hide confetti after 5 seconds
-        setTimeout(() => setShowConfetti(false), 5000);
+        setTimeout(() => setShowConfetti(false), 3000);
       } else if (currentGuessIndex === 5) {
         setGameOver(true);
       }
