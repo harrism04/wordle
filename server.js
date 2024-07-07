@@ -23,6 +23,14 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 // Detailed request logging
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  // Filter out large headers like cookies
+  req.headers = Object.keys(req.headers).reduce((acc, key) => {
+    if (key.toLowerCase() !== 'cookie') {
+      acc[key] = req.headers[key];
+    }
+    return acc;
+  }, {});
+
   console.log('Headers:', JSON.stringify(req.headers, null, 2));
   console.log('Body:', JSON.stringify(req.body, null, 2));
   next();
