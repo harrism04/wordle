@@ -1,4 +1,4 @@
-const fetchWordFromServer = async () => {
+export const fetchWord = async () => {
   console.log('Attempting to fetch word from server...');
   try {
     const response = await fetch('/api/word');
@@ -8,15 +8,6 @@ const fetchWordFromServer = async () => {
     const data = await response.json();
     console.log('Word fetched from server:', data.word);
     return data.word;
-  } catch (error) {
-    console.error('Error fetching word from server:', error.message);
-    throw error;
-  }
-};
-
-export const fetchWord = async () => {
-  try {
-    return await fetchWordFromServer();
   } catch (error) {
     console.error('Failed to fetch word:', error.message);
     return 'ERROR';

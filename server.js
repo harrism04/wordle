@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import path from 'path';
-import cors from 'cors';
-import fetch from 'node-fetch';
+const dotenv = require('dotenv');
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const fetch = require('node-fetch');
 
 dotenv.config();
 
@@ -28,8 +28,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(path.resolve(), 'build')));
-
 app.get('/api/word', async (req, res) => {
   try {
     console.log('Fetching word from Google Sheets...');
@@ -53,8 +51,13 @@ app.get('/api/word', async (req, res) => {
   }
 });
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'build')));
+
+// The "catchall" handler: for any request that doesn't match one above, send back index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(path.resolve(), 'build', 'index.html'));
+  console.log(`[${new Date().toISOString()}] Serving index.html for ${req.url}`);
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // Error handling middleware
