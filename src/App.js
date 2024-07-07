@@ -15,28 +15,6 @@ const App = () => {
     fetchWord().then(setWord);
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (gameOver) return;
-
-      const key = event.key.toUpperCase();
-
-      if (key === 'ENTER') {
-        handleKeyPress('Enter');
-      } else if (key === 'BACKSPACE') {
-        handleKeyPress('Backspace');
-      } else if (/^[A-Z]$/.test(key)) {
-        handleKeyPress(key);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [gameOver, currentGuess, word, guesses]); // Added dependencies
-
   const handleKeyPress = (key) => {
     if (gameOver) return;
 
@@ -52,7 +30,7 @@ const App = () => {
       if (currentGuess === word) {
         setGameOver(true);
         setShowConfetti(true);
-        // Hide confetti after 3 seconds
+        // Hide confetti after 5 seconds
         setTimeout(() => setShowConfetti(false), 3000);
       } else if (currentGuessIndex === 5) {
         setGameOver(true);
@@ -72,9 +50,7 @@ const App = () => {
       <Keyboard onKeyPress={handleKeyPress} guesses={guesses} word={word} />
       {gameOver && (
         <div className="mt-4 text-xl font-bold">
-          {guesses.includes(word) 
-            ? 'Congrats, nerd you guessed it right!' 
-            : `What a loser! The word was: ${word}`}
+          {guesses.includes(word) ? 'Congrats, nerd! You guessed it right!' : What a loser! The word was: ${word}}
         </div>
       )}
     </div>
